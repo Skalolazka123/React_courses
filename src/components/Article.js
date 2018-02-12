@@ -1,18 +1,38 @@
 import React, {Component} from 'react'
 
 class Article extends Component {
-    state = {
-        isOpen:false
-    }
     /*
     *Аналог (beta-запись)
+    */
     constructor(props){
         super(props)
         this.state = {
-            isOpen: true
+            isOpen: props.defaultOpen
         }
     }
+    /*Экспериментальный синтаксис
+    state = {
+        isOpen:false
+    }*/
+
+    /*
+    *если нужно сделать что-то до рендера компонента
     */
+    componentWillMount() {
+        console.log('---','mounting')
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('---', 'will receive props')
+        if(nextProps.defaultOpen !== this.props.defaultOpen) this.setState({
+            isOpen: nextProps.defaultOpen
+        })
+    }
+
+
+    componentWillUpdate() {
+        console.log('---', 'will update')
+    }
     render() {
         const {article} = this.props
         console.log('===', this.props)
