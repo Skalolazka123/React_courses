@@ -1,19 +1,29 @@
-import React, {Component} from 'react'
+import React, {Component, PureComponent} from 'react'
 
-class Article extends Component {
+class Article extends PureComponent {
     /*
     *Аналог (beta-запись)
     */
     constructor(props){
         super(props)
         this.state = {
-            isOpen: props.defaultOpen
+            isOpen: props.defaultOpen,
+            count: 0
         }
     }
     /*Экспериментальный синтаксис
     state = {
         isOpen:false
     }*/
+
+    /*
+    *Если наследуемся от PureComponent, то shouldComponentUpdate там уже реализован
+    */
+    /*
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.isOpen !== nextState.isOpen
+    }
+    */
 
     /*
     *если нужно сделать что-то до рендера компонента
@@ -23,7 +33,6 @@ class Article extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('---', 'will receive props')
         if(nextProps.defaultOpen !== this.props.defaultOpen) this.setState({
             isOpen: nextProps.defaultOpen
         })
@@ -35,12 +44,12 @@ class Article extends Component {
     }
     render() {
         const {article} = this.props
-        console.log('===', this.props)
         const body = this.state.isOpen && < section className="card-text"> {article.text} < /section>
         return (
             < div className="card mx-auto" style={{width: '50%'}}>
                 <div className="card-header">
-                    < h2 > {article.title}
+                    < h2 onClick={this.incrementCounter}> {article.title}
+            clicked {this.state.count}
                         < button onClick = {this.handleClick} className="btn btn-primary btn-lg float-right"> {this.state.isOpen ? 'close' : 'open'} < /button>
                     < /h2>
                 </div>
@@ -53,8 +62,14 @@ class Article extends Component {
             < /div>
         )
     }
+
+    incrementCounter = () => {
+        this.setState({
+            count: this.state.count + 1
+        })
+    }
+
     handleClick = () => {
-        console.log('===','clicked')
         //Метод, где описывается состояние
         this.setState({
             isOpen: !this.state.isOpen
